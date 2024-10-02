@@ -29,11 +29,22 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Switch to gh-pages branch
+        run: |
+          git fetch origin
+          if git rev-parse --verify origin/gh-pages; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf .
+            echo "Initialized gh-pages branch" > README.md
+            git add README.md
+            git commit -m "Initialize gh-pages branch"
+            git push origin gh-pages
+          fi
+
       - name: Create a new folder in gh-pages
         run: |
-          git fetch origin gh-pages:gh-pages
-          git checkout gh-pages
-          
           mkdir -p $PACKAGE_VERSION
           git add $PACKAGE_VERSION
           git commit -m "Create folder for version $PACKAGE_VERSION"
