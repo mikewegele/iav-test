@@ -18,48 +18,34 @@ jobs:
         with:
           fetch-depth: 0 # Ensures we have access to all branches
 
-      - name: Set up Git user
-        run: |
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "${{ github.actor }}"
-
       - name: Get package version
         id: version
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Switch to gh-pages branch
+      - name: Set up git config
         run: |
-          git fetch origin
-          if git rev-parse --verify origin/gh-pages; then
-            git checkout gh-pages
-          else
-            git checkout --orphan gh-pages
-            git rm -rf .
-            echo "Initialized gh-pages branch" > README.md
-            git add README.md
-            git commit -m "Initialize gh-pages branch"
-            git push origin gh-pages
-          fi
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
 
-      - name: Create a new folder in gh-pages
+      - name: Checkout gh-pages branch
         run: |
-          mkdir -p $PACKAGE_VERSION
-          git add $PACKAGE_VERSION
-          git commit -m "Create folder for version $PACKAGE_VERSION"
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+
+      - name: Create version folder if not exists
+        run: |
+          if [ ! -d "$PACKAGE_VERSION" ]; then
+            mkdir $PACKAGE_VERSION
+            git add $PACKAGE_VERSION
+            git commit -m "Create folder for version $PACKAGE_VERSION"
+          fi
 
       - name: Copy /docs to new folder
         run: |
           git checkout main -- docs/
           cp -r docs/* $PACKAGE_VERSION/
           git add $PACKAGE_VERSION
-          git commit -m "Deploy docs for version $PACKAGE_VERSION"
-
-      - name: Copy index.html to src in gh-pages
-        run: |
-          mkdir -p src
-          cp docs/index.html src/
-          git add src/index.html
-          git commit -m "Copy index.html to src"
+          git commit -m "Deploy docs for version $PACKAGE_VERSION" || echo "No changes to commit"
           git push origin gh-pages
