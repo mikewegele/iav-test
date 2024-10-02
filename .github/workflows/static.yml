@@ -9,6 +9,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   deploy-docs:
     runs-on: ubuntu-latest
@@ -16,7 +19,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Ensures we have access to all branches
+          fetch-depth: 0
 
       - name: Get package version
         id: version
