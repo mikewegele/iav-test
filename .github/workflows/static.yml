@@ -50,18 +50,16 @@ jobs:
         run: |
           mkdir -p $PACKAGE_VERSION
           git add $PACKAGE_VERSION
-          git commit -m "Create folder for version $PACKAGE_VERSION"
 
       - name: Copy /docs content to version folder
         run: |
           git checkout main -- docs/
           cp -r docs/* $PACKAGE_VERSION/
           git add $PACKAGE_VERSION
-          git commit -m "Deploy docs content for version $PACKAGE_VERSION"
 
       - name: Copy index.html to root in gh-pages
         run: |
-          cp docs/index.html .  # Kopiere index.html in das Wurzelverzeichnis
+          cp docs/index.html . 
           git add index.html
-          git commit -m "Copy index.html to root"
+          git commit -m "Deploy docs content for version $PACKAGE_VERSION"
           git push origin gh-pages
