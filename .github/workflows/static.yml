@@ -1,0 +1,49 @@
+name: Deploy Docs on Release
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+    branches:
+      - main
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Ensures we have access to all branches
+
+      - name: Get package version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create a new folder in gh-pages
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+          
+          mkdir -p $PACKAGE_VERSION
+          git add $PACKAGE_VERSION
+          git commit -m "Create folder for version $PACKAGE_VERSION"
+
+      - name: Copy /docs to new folder
+        run: |
+          git checkout main -- docs/
+          cp -r docs/* $PACKAGE_VERSION/
+          git add $PACKAGE_VERSION
+          git commit -m "Deploy docs for version $PACKAGE_VERSION"
+
+      - name: Copy index.html to src in gh-pages
+        run: |
+          mkdir -p src
+          cp docs/index.html src/
+          git add src/index.html
+          git commit -m "Copy index.html to src"
+          git push origin gh-pages
