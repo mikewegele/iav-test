@@ -61,5 +61,7 @@ jobs:
         run: |
           cp docs/index.html . 
           git add index.html
+          git rm -rf docs/*
+          git add .
           git commit -m "Deploy docs content for version $PACKAGE_VERSION"
           git push origin gh-pages
