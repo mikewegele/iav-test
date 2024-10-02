@@ -10,7 +10,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: write  # Erlaubt das Pushen von Commits
 
 jobs:
   deploy-docs:
@@ -19,7 +19,12 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Ensures we have access to all branches
+
+      - name: Set up Git user
+        run: |
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --global user.name "${{ github.actor }}"
 
       - name: Get package version
         id: version
@@ -27,21 +32,36 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Set up git config
+      - name: Switch to gh-pages branch
         run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
+          git fetch origin
+          if git rev-parse --verify origin/gh-pages; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf .
+            echo "Initialized gh-pages branch" > README.md
+            git add README.md
+            git commit -m "Initialize gh-pages branch"
+            git push origin gh-pages
+          fi
 
-      - name: Checkout gh-pages branch
+      - name: Create a new version folder in gh-pages
         run: |
-          git fetch origin gh-pages:gh-pages
-          git checkout gh-pages
+          mkdir -p $PACKAGE_VERSION
+          git add $PACKAGE_VERSION
+          git commit -m "Create folder for version $PACKAGE_VERSION"
 
-      - name: Copy /docs to new folder
+      - name: Copy /docs content to version folder
         run: |
-          mkdir $PACKAGE_VERSION
           git checkout main -- docs/
           cp -r docs/* $PACKAGE_VERSION/
           git add $PACKAGE_VERSION
-          git commit -m "Deploy docs for version $PACKAGE_VERSION" || echo "No changes to commit"
+          git commit -m "Deploy docs content for version $PACKAGE_VERSION"
+
+      - name: Copy index.html to root in gh-pages
+        run: |
+          cp docs/index.html .  # Kopiere index.html in das Wurzelverzeichnis
+          git add index.html
+          git commit -m "Copy index.html to root"
           git push origin gh-pages
