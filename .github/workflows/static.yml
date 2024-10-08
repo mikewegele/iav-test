@@ -51,6 +51,12 @@ jobs:
           mkdir -p $PACKAGE_VERSION
           git add $PACKAGE_VERSION
 
+      - name: Copy /docs content to version folder
+        run: |
+          git checkout main -- docs/
+          cp -r docs/* $PACKAGE_VERSION/
+          git add $PACKAGE_VERSION
+
       - name: Append current version to version-list.json
         run: |
           if [ ! -f docs/version/version-list.json ]; then
@@ -58,11 +64,5 @@ jobs:
           fi
           cat docs/version/version-list.json | jq ". += [\"$PACKAGE_VERSION\"]" > temp.json && mv temp.json docs/version/version-list.json
           git add docs/version/version-list.json
-
-      - name: Copy /docs content to version folder
-        run: |
-          git checkout main -- docs/
-          cp -r docs/* $PACKAGE_VERSION/
-          git add $PACKAGE_VERSION
           git commit -m "Deploy docs content for version $PACKAGE_VERSION"
           git push origin gh-pages
