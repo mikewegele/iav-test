@@ -58,6 +58,7 @@ jobs:
           git add $PACKAGE_VERSION
 
       - name: Append current version to version-list.json
+        run: |
           echo "- $PACKAGE_VERSION" >> docs/version/version-list.md
           git add docs/version/version-list.md
           git commit -m "Deploy docs content for version $PACKAGE_VERSION"
