@@ -56,12 +56,5 @@ jobs:
           git checkout main -- docs/
           cp -r docs/* $PACKAGE_VERSION/
           git add $PACKAGE_VERSION
-
-      - name: Copy index.html to root in gh-pages
-        run: |
-          cp docs/index.html . 
-          git add index.html
-          git rm -rf docs/*
-          git add .
           git commit -m "Deploy docs content for version $PACKAGE_VERSION"
           git push origin gh-pages
