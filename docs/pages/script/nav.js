@@ -78,3 +78,26 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('./version/version-list.md')
+        .then(response => response.text())
+        .then(data => {
+            const versions = data.split('\n').filter(Boolean);
+            const dropdown = document.getElementById('versionDropdown');
+
+            versions.forEach(version => {
+                const option = document.createElement('option');
+                option.value = version;
+                option.textContent = version;
+                dropdown.appendChild(option);
+            });
+            dropdown.addEventListener('change', function() {
+                const selectedVersion = this.value;
+                window.location.href = `${selectedVersion}/index.html`;
+            });
+        })
+        .catch(error => {
+            console.error('Fehler beim Laden der Versionen:', error);
+        });
+});
