@@ -58,11 +58,7 @@ jobs:
           git add $PACKAGE_VERSION
 
       - name: Append current version to version-list.json
-        run: |
-          if [ ! -f docs/version/version-list.json ]; then
-            echo '[]' > docs/version/version-list.json
-          fi
-          cat docs/version/version-list.json | jq ". += [\"$PACKAGE_VERSION\"]" > temp.json && mv temp.json docs/version/version-list.json
-          git add docs/version/version-list.json
+          echo "- $PACKAGE_VERSION" >> docs/version/version-list.md
+          git add docs/version/version-list.md
           git commit -m "Deploy docs content for version $PACKAGE_VERSION"
           git push origin gh-pages
