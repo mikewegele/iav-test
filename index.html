@@ -14,6 +14,10 @@
         .then(text => {
             const versions = text.trim().split('\n');
             const latestVersion = versions[0].trim();
+            const currentVersion = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
+            const script = document.createElement('script');
+            script.src = `./${currentVersion}/pages/script/nav.js`;
+            document.body.appendChild(script);
             window.location.href = `./${latestVersion}/index.html`;
         })
         .catch(error => console.error('Fehler beim Laden der Version-Liste:', error));
