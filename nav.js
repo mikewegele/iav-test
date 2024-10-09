@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const navList = document.getElementById('nav-list');
             const headers = document.querySelectorAll('h1, h2');
-
+            console.log(headers)
             headers.forEach(header => {
                 const listItem = document.createElement('li');
                 listItem.classList.add(header.tagName.toLowerCase());
