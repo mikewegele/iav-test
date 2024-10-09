@@ -85,14 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             const versions = data.split('\n').filter(Boolean);
             const dropdown = document.getElementById('versionDropdown');
-
+            console.log(versions)
             const currentVersion = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
-
+            console.log(currentVersion)
             versions.forEach(version => {
                 const option = document.createElement('option');
                 option.value = version;
                 option.textContent = version;
-
+                console.log(option)
                 if (version === currentVersion) {
                     option.selected = true;
                 }
