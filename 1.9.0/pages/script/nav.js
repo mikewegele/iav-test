@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (version === currentVersion) {
                     option.selected = true;
                 }
-
+                console.log(dropdown)
                 dropdown.appendChild(option);
             });
 
