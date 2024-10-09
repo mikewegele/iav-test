@@ -86,15 +86,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const versions = data.split('\n').filter(Boolean);
             const dropdown = document.getElementById('versionDropdown');
 
+            const currentVersion = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
+
             versions.forEach(version => {
                 const option = document.createElement('option');
                 option.value = version;
                 option.textContent = version;
+
+                if (version === currentVersion) {
+                    option.selected = true;
+                }
+
                 dropdown.appendChild(option);
             });
+
             dropdown.addEventListener('change', function() {
                 const selectedVersion = this.value;
-                window.location.href = `${selectedVersion}/index.html`;
+                const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -2).join('/');
+                window.location.href = `${baseUrl}/${selectedVersion}/index.html`;
             });
         })
         .catch(error => {

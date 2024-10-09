@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Docs Redirect</title>
+    <title>Redirect</title>
 </head>
 <body>
 <script>
-    window.location.href = "./docs/index.html";
+    const versionListUrl = './version-list.md';
+
+    fetch(versionListUrl)
+        .then(response => response.text())
+        .then(text => {
+            const versions = text.trim().split('\n');
+            const latestVersion = versions[0].trim();
+            window.location.href = `./${latestVersion}/index.html`;
+        })
+        .catch(error => console.error('Fehler beim Laden der Version-Liste:', error));
 </script>
 </body>
 </html>
