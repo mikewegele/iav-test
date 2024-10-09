@@ -79,25 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+function loadVersions() {
     fetch('../version-list.md')
         .then(response => response.text())
         .then(data => {
             const versions = data.split('\n').filter(Boolean);
             const dropdown = document.getElementById('versionDropdown');
-            console.log(document)
-            console.log(versions)
             const currentVersion = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
-            console.log(currentVersion)
+
             versions.forEach(version => {
                 const option = document.createElement('option');
                 option.value = version;
                 option.textContent = version;
-                console.log(option)
                 if (version === currentVersion) {
                     option.selected = true;
                 }
-                console.log(dropdown)
                 dropdown.appendChild(option);
             });
 
@@ -110,4 +106,34 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('Fehler beim Laden der Versionen:', error);
         });
+}
+
+document.addEventListener('DOMContentLoaded', loadVersions);
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('./overview.html')
+        .then(response => {
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('container').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Fehler beim Laden der HTML-Datei:', error);
+        });
 });
+
+
+
+function navigate(url) {
+    fetch(url)
+        .then(response => {
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('container').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Fehler beim Laden der HTML-Datei:', error);
+        });
+}
