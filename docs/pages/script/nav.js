@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('./version/version-list.md')
+    fetch('../version-list.md')
         .then(response => response.text())
         .then(data => {
             const versions = data.split('\n').filter(Boolean);
