@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             const versions = data.split('\n').filter(Boolean);
             const dropdown = document.getElementById('versionDropdown');
+            console.log(document)
             console.log(versions)
             const currentVersion = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
             console.log(currentVersion)
