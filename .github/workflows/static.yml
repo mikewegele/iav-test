@@ -67,7 +67,7 @@ jobs:
 
       - name: Append current version to version-list.md
         run: |
-          echo -e "$PACKAGE_VERSION\n" >> version-list.md
+          echo -e "\n$PACKAGE_VERSION" >> version-list.md
           git add version-list.md
           git commit -m "Append version $PACKAGE_VERSION to version-list.md"
           git push origin gh-pages
