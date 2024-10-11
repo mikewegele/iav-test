@@ -128,11 +128,14 @@ document.addEventListener('DOMContentLoaded', loadVersions);
 
 document.addEventListener('DOMContentLoaded', async () => {
     const currentVersion = await getCurrentVersion();
+    console.log(currentVersion)
     fetch(`${currentVersion}/overview.html`)
         .then(response => {
+            console.log(response)
             return response.text();
         })
         .then(html => {
+            console.log(html)
             document.getElementById('container').innerHTML = html;
             generatePageNavigation();
         })
