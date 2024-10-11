@@ -16,8 +16,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('./pages/html/nav.html')
+const getCurrentVersion = async () => {
+    return await fetch('../version-list.md')
+        .then(response => response.text())
+        .then(data => {
+            const versions = data.split('\n').filter(Boolean);
+            return versions[0];
+        });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const currentVersion = await getCurrentVersion();
+    fetch(`${currentVersion}/pages/html/nav.html`)
         .then(response => {
             return response.text()
         })
@@ -26,24 +36,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('./pages/html/header.html')
+document.addEventListener('DOMContentLoaded', async () => {
+    const currentVersion = await getCurrentVersion();
+    fetch(`${currentVersion}/pages/html/header.html`)
         .then(response => response.text())
         .then(data => {
             document.getElementById('header-container').innerHTML = data;
         });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('./pages/html/imprint-footer.html')
+document.addEventListener('DOMContentLoaded', async () => {
+    const currentVersion = await getCurrentVersion();
+    fetch(`${currentVersion}/pages/html/imprint-footer.html`)
         .then(response => response.text())
         .then(data => {
             document.getElementById('footer-container').innerHTML = data;
         });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('./pages/html/nav.html')
+document.addEventListener('DOMContentLoaded', async function () {
+    const currentVersion = await getCurrentVersion();
+    fetch(`${currentVersion}/pages/html/nav.html`)
         .then(response => response.text())
         .then(data => {
             document.getElementById('drawer').innerHTML = data;
@@ -57,8 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('./pages/html/page-nav.html')
+document.addEventListener('DOMContentLoaded', async () => {
+    const currentVersion = await getCurrentVersion();
+    fetch(`${currentVersion}/pages/html/page-nav.html`)
         .then(response => response.text())
         .then(data => {
             document.getElementById('page-placeholder').innerHTML = data;
@@ -85,6 +99,8 @@ function loadVersions() {
         .then(data => {
             const versions = data.split('\n').filter(Boolean);
             const dropdown = document.getElementById('versionDropdown');
+            console.log(document)
+            console.log(document.getElementById("header-container"))
             const currentVersion = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
 
             versions.forEach(version => {
@@ -110,30 +126,89 @@ function loadVersions() {
 
 document.addEventListener('DOMContentLoaded', loadVersions);
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('./overview.html')
+document.addEventListener('DOMContentLoaded', async () => {
+    const currentVersion = await getCurrentVersion();
+    fetch(`${currentVersion}/overview.html`)
         .then(response => {
             return response.text();
         })
         .then(html => {
             document.getElementById('container').innerHTML = html;
+            generatePageNavigation();
         })
         .catch(error => {
             console.error('Fehler beim Laden der HTML-Datei:', error);
         });
 });
 
-
-
-function navigate(url) {
-    fetch(url)
-        .then(response => {
-            return response.text();
-        })
+async function navigate(url, version = null) {
+    const currentVersion = version || await getCurrentVersion();
+    fetch(`${currentVersion}/${url}`)
+        .then(response => response.text())
         .then(html => {
             document.getElementById('container').innerHTML = html;
+            generatePageNavigation();
         })
         .catch(error => {
             console.error('Fehler beim Laden der HTML-Datei:', error);
         });
 }
+
+function generatePageNavigation() {
+    document.getElementById('nav-list').innerHTML = '';
+    const container = document.getElementById('container');
+    const pagePlaceholder = document.getElementById('nav-list');
+    const navList = document.createElement('ul');
+
+    const headers = container.querySelectorAll('h1, h2');
+    headers.forEach((header) => {
+        const listItem = document.createElement('li');
+        listItem.classList.add(header.tagName.toLowerCase());
+
+        const link = document.createElement('a');
+        link.textContent = header.textContent;
+        link.href = `#${header.id || header.textContent.replace(/\s+/g, '-').toLowerCase()}`;
+
+        listItem.appendChild(link);
+        navList.appendChild(listItem);
+    });
+
+    pagePlaceholder.appendChild(navList);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const currentVersion = await getCurrentVersion();
+
+    fetch(`${currentVersion}/pages/html/header.html`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-container').innerHTML = data;
+            loadVersionDropdown();
+        });
+
+    async function loadVersionDropdown() {
+        try {
+            const versionResponse = await fetch(`version-list.md`);
+            const versionText = await versionResponse.text();
+
+            const versionDropdown = document.getElementById('versionDropdown');
+            const versions = versionText.split('\n').filter(line => line.trim() !== '');
+
+            versions.forEach(version => {
+                const option = document.createElement('option');
+                option.value = version;
+                option.textContent = version;
+                versionDropdown.appendChild(option);
+            });
+
+            versionDropdown.addEventListener('change', function() {
+                const selectedVersion = this.value;
+                console.log(selectedVersion)
+                navigate("overview.html", selectedVersion)
+            });
+
+        } catch (error) {
+            console.error('Fehler beim Laden der Versionen:', error);
+        }
+    }
+});
