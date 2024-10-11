@@ -57,6 +57,14 @@ jobs:
           cp -r docs/* $PACKAGE_VERSION/
           git add $PACKAGE_VERSION
 
+      - name: Move index, nav.js, pages.css, and styles.css to root
+        run: |
+          mv $PACKAGE_VERSION/index.html ./index.html
+          mv $PACKAGE_VERSION/nav.js ./nav.js
+          mv $PACKAGE_VERSION/pages.css ./pages.css
+          mv $PACKAGE_VERSION/styles.css ./styles.css
+          git add index.html nav.js pages.css styles.css
+
       - name: Append current version to version-list.md
         run: |
           echo -e "$PACKAGE_VERSION\n" >> version-list.md
