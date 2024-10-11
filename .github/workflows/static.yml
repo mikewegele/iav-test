@@ -59,7 +59,6 @@ jobs:
 
       - name: Move index, nav.js, pages.css, and styles.css to root
         run: |
-          mv index.html ./index.html
           mv script/nav.js ./nav.js
           mv styles/pages.css ./pages.css
           mv styles/styles.css ./styles.css
