@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('header-container').innerHTML = await fetchData(`${newestVersion}/pages/html/header.html`);
     document.getElementById('footer-container').innerHTML = await fetchData(`${newestVersion}/pages/html/imprint-footer.html`);
     document.getElementById('nav-placeholder').innerHTML = await fetchData(`${newestVersion}/pages/html/nav.html`);
+    pushWindowState(`${basePath}/${newestVersion}/overview.html`)
+    await loadInitial()
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -72,14 +74,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 });
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const currentVersion = await getNewestVersion();
+const loadInitial = async () => {
     const startUrl = "overview.html";
-    const data = await fetchData(`${currentVersion}/${startUrl}`);
+    const data = await fetchData(`${startUrl}`);
     document.getElementById('container').innerHTML = data;
     generatePageNavigation();
-    pushWindowState(`${basePath}/${currentVersion}/${startUrl}`)
-});
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const currentVersion = await getNewestVersion();
