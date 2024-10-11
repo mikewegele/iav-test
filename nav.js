@@ -20,8 +20,7 @@ const getCurrentVersion = async () => {
     return await fetch('../version-list.md')
         .then(response => response.text())
         .then(data => {
-            const versions = data.split('\n').filter(Boolean);
-            console.log(versions)
+            const versions = ["1.9.0", "1.8.0"]
             return versions[0];
         });
 }
