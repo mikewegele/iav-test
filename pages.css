@@ -110,6 +110,7 @@ pre, code {
 }
 
 ul {
+    margin-left: 20px;
     list-style-type: disc;
 }
 
