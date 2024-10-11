@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', loadVersions);
 
 document.addEventListener('DOMContentLoaded', async () => {
     const currentVersion = await getCurrentVersion();
+    console.log("HERE IST THE VERSION" + currentVersion)
     console.log(currentVersion)
     fetch(`${currentVersion}/overview.html`)
         .then(response => {
