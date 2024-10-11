@@ -17,6 +17,8 @@
  */
 
 const getCurrentVersion = async () => {
+    const response = await fetch("./version-list.md")
+    console.log(response.text())
     return await fetch('../version-list.md')
         .then(response => response.text())
         .then(data => {
