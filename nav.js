@@ -21,6 +21,7 @@ const getCurrentVersion = async () => {
         .then(response => response.text())
         .then(data => {
             const versions = data.split('\n').filter(Boolean);
+            console.log(versions)
             return versions[0];
         });
 }
