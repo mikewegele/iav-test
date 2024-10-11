@@ -60,9 +60,9 @@ jobs:
       - name: Move index, nav.js, pages.css, and styles.css to root
         run: |
           mv $PACKAGE_VERSION/index.html ./index.html
-          mv $PACKAGE_VERSION/nav.js ./nav.js
-          mv $PACKAGE_VERSION/pages.css ./pages.css
-          mv $PACKAGE_VERSION/styles.css ./styles.css
+          mv $PACKAGE_VERSION/script/nav.js ./nav.js
+          mv $PACKAGE_VERSION/styles/pages.css ./pages.css
+          mv $PACKAGE_VERSION/styles/styles.css ./styles.css
           git add index.html nav.js pages.css styles.css
 
       - name: Append current version to version-list.md
