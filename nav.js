@@ -25,6 +25,12 @@ const getCurrentVersion = async () => {
         });
 }
 
+function getSelectedVersion() {
+    const versionDropdown = document.getElementById('versionDropdown');
+    return versionDropdown.value;
+}
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     const currentVersion = await getCurrentVersion();
     fetch(`${currentVersion}/pages/html/nav.html`)
@@ -146,8 +152,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function navigate(url, version = null) {
-    const currentVersion = version || await getCurrentVersion();
-    fetch(`${currentVersion}/${url}`)
+    const currentVersion = version || await getSelectedVersion();
+    const basePath = '/iav-test';
+    const expectedPath = `${basePath}/${currentVersion}/${url}`;
+    const currentPath = window.location.pathname;
+
+    if (currentPath !== expectedPath) {
+        window.history.pushState({}, '', expectedPath);
+    }
+
+    fetch(expectedPath)
         .then(response => response.text())
         .then(html => {
             document.getElementById('container').innerHTML = html;
@@ -157,6 +171,12 @@ async function navigate(url, version = null) {
             console.error('Fehler beim Laden der HTML-Datei:', error);
         });
 }
+
+window.addEventListener('popstate', function(event) {
+    const path = window.location.pathname;
+    const [,, version, page] = path.split('/').filter(Boolean);
+    navigate(page, version);
+});
 
 function generatePageNavigation() {
     document.getElementById('nav-list').innerHTML = '';
@@ -207,7 +227,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             versionDropdown.addEventListener('change', function() {
                 const selectedVersion = this.value;
-                console.log(selectedVersion)
                 navigate("overview.html", selectedVersion)
             });
 
