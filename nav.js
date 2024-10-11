@@ -16,6 +16,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+const basePath = '/iav-test';
+
 const getNewestVersion = async () => {
     return await fetch("./version-list.md")
         .then(response => response.text())
@@ -30,16 +32,18 @@ const getSelectedVersion = () => {
     return versionDropdown.value;
 }
 
+const pushWindowState = (path) => {
+    window.history.pushState({}, '', path);
+}
+
 const navigate = async (url, version = null) => {
     const currentVersion = version || await getSelectedVersion();
-    const basePath = '/iav-test';
     const expectedPath = `${basePath}/${currentVersion}/${url}`;
     const currentPath = window.location.pathname;
     if (currentPath !== expectedPath) {
         window.history.pushState({}, '', expectedPath);
     }
-    const data = await fetchData(expectedPath)
-    document.getElementById('container').innerHTML = data;
+    document.getElementById('container').innerHTML = await fetchData(expectedPath);
     generatePageNavigation();
 }
 
@@ -70,9 +74,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const currentVersion = await getNewestVersion();
-    const data = await fetchData(`${currentVersion}/overview.html`);
+    const startUrl = "overview.html";
+    const data = await fetchData(`${currentVersion}/${startUrl}`);
     document.getElementById('container').innerHTML = data;
     generatePageNavigation();
+    pushWindowState(`${basePath}/${currentVersion}/${startUrl}`)
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
