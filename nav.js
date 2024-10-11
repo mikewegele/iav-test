@@ -17,9 +17,7 @@
  */
 
 const getCurrentVersion = async () => {
-    const response = await fetch("./version-list.md")
-    console.log(response.text())
-    return await fetch('../version-list.md')
+    return await fetch("./version-list.md")
         .then(response => response.text())
         .then(data => {
             const versions = ["1.9.0", "1.8.0"]
@@ -96,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function loadVersions() {
-    fetch('../version-list.md')
+    fetch("/version-list.md")
         .then(response => response.text())
         .then(data => {
             const versions = data.split('\n').filter(Boolean);
@@ -194,7 +192,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadVersionDropdown() {
         try {
-            const versionResponse = await fetch(`version-list.md`);
+            const versionResponse = await fetch("version-list.md");
             const versionText = await versionResponse.text();
 
             const versionDropdown = document.getElementById('versionDropdown');
