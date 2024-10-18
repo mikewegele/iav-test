@@ -133,7 +133,7 @@ const loadVersionDropdown = async () => {
     const versionResponse = await fetch("../version-list.md");
     if (versionResponse.ok) {
         const versionText = await versionResponse.text();
-        const versions = versionText.split('\n').filter(line => line.trim() !== '');
+        const versions = versionText.split('\n').filter(line => line.trim() !== '').reverse();
 
         versions.forEach(version => {
             const option = document.createElement('option');
