@@ -17,17 +17,29 @@
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
+    <link href="../styles/styles.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Quick Overview</title>
-    <script src="./pages.js" type="application/javascript"></script>
+    <title>Header</title>
 </head>
 <body>
-<div id="page"></div>
-<script>
-
-</script>
+<header class="main-header">
+    <div class="header-content">
+        <a href="https://github.com/iavofficial/IAVFrontendFramework" target="_blank">
+            <img alt="GitHub" height="32"
+                 src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                 width="32">
+        </a>
+        <span class="header-title">IAV Frontend Framework</span>
+        <div class="version-dropdown">
+            <label>
+                <select class="header-version" id="versionDropdown">
+                </select>
+            </label>
+        </div>
+    </div>
+</header>
 </body>
 </html>

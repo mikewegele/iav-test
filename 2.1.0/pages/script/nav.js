@@ -19,7 +19,7 @@
 const basePath = '/iav-test';
 
 const getNewestVersion = async () => {
-    return await fetch("../version-list.md")
+    return await fetch("./version-list.md")
         .then(response => response.text())
         .then(data => {
             const versions = ["1.9.0", "1.8.0"]
@@ -54,15 +54,16 @@ const fetchData = async (path) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const newestVersion = await getNewestVersion();
-    document.getElementById('header-container').innerHTML = await fetchData(`${basePath}/${newestVersion}/pages/html/header.html`);
-    document.getElementById('footer-container').innerHTML = await fetchData(`${basePath}/${newestVersion}/pages/html/imprint-footer.html`);
-    document.getElementById('nav-placeholder').innerHTML = await fetchData(`${basePath}/${newestVersion}/pages/html/nav.html`);
+    document.getElementById('header-container').innerHTML = await fetchData(`${newestVersion}/pages/html/header.html`);
+    document.getElementById('footer-container').innerHTML = await fetchData(`${newestVersion}/pages/html/imprint-footer.html`);
+    document.getElementById('nav-placeholder').innerHTML = await fetchData(`${newestVersion}/pages/html/nav.html`);
     pushWindowState(`${basePath}/${newestVersion}/overview.html`)
     await loadInitial()
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
-    const data = await fetchData(`/pages/html/nav.html`)
+    const currentVersion = await getNewestVersion();
+    const data = await fetchData(`${currentVersion}/pages/html/nav.html`)
     document.getElementById('drawer').innerHTML = data;
     const currentPath = window.location.pathname.split('/').pop();
     const links = document.querySelectorAll('.drawer a');
@@ -81,7 +82,8 @@ const loadInitial = async () => {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    fetch(`/pages/html/page-nav.html`)
+    const currentVersion = await getNewestVersion();
+    fetch(`${currentVersion}/pages/html/page-nav.html`)
         .then(response => response.text())
         .then(data => {
             document.getElementById('page-placeholder').innerHTML = data;
@@ -118,9 +120,8 @@ function generatePageNavigation() {
 }
 
 const loadVersionDropdown = async () => {
-    const versionResponse = await fetch("../version-list.md");
+    const versionResponse = await fetch("version-list.md");
     const versionText = await versionResponse.text();
-    console.log(versionText)
     const versionDropdown = document.getElementById('versionDropdown');
     const versions = versionText.split('\n').filter(line => line.trim() !== '');
     versions.forEach(version => {
@@ -136,7 +137,8 @@ const loadVersionDropdown = async () => {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const response = await fetch(`/pages/html/header.html`)
+    const currentVersion = await getNewestVersion();
+    const response = await fetch(`${currentVersion}/pages/html/header.html`)
     document.getElementById('header-container').innerHTML = await response.text();
     await loadVersionDropdown();
 });
