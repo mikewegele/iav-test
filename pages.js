@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .then(response => response.text())
             .then(data => {
                 const versions = data.trim().split('\n');
-                return versions[0];
+                return versions[versions.length - 1];
             })
     };
     const newestVersion = await getNewestVersion();
