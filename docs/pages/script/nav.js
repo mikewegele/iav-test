@@ -44,7 +44,8 @@ const getOptionalVersionList = async () => {
     const response = await fetch("../version-list.md");
     if (response.ok) {
         const data = await response.text();
-        return data.trim().split('\n')[0];
+        const versions = data.trim().split('\n');
+        return versions[versions.length - 1];
     } else {
         return "docs";
     }
