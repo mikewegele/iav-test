@@ -8,10 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             })
     };
     const newestVersion = await getNewestVersion();
-    const response = await fetch(`/iav-test/${newestVersion}/index.html`);
-    console.log(response)
-    const indexHTML = await response.text();
-    document.open();
-    document.write(indexHTML);
-    document.close();
+    if (newestVersion) {
+        window.location.href = `/iav-test/${newestVersion}/index.html`;
+    }
 });
