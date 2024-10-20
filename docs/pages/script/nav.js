@@ -34,10 +34,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         pushWindowState(`${basePath}/${newestVersion}/${fileName}`)
         await loadPage(fileName)
     }
-    await loadVersionDropdown()
+    await loadVersionDropdown();
     await loadPage(fileName)
     await loadPageNav();
-    createPageNavigation();
+    await loadVersionBanner(newestVersion);
+    await createPageNavigation();
 });
 
 const getOptionalVersionList = async () => {
@@ -153,3 +154,16 @@ const loadVersionDropdown = async () => {
         navigate("overview.html", selectedVersion);
     });
 }
+
+const loadVersionBanner = async (newestVersion) => {
+    const versionBanner = document.getElementById('versionBanner');
+    const selectedVersion = await getSelectedVersion();
+
+    if (newestVersion !== selectedVersion) {
+        versionBanner.innerHTML = `
+            <div class="version-banner">
+                Version ${newestVersion} is out now!
+            </div>
+        `;
+    }
+};
