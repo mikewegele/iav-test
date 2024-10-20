@@ -61,5 +61,7 @@ jobs:
         run: |
           echo -e "\n$PACKAGE_VERSION" >> version-list.md
           git add version-list.md
+          rm -rf docs/*
+          git add .
           git commit -m "Append version $PACKAGE_VERSION to version-list.md"
           git push origin gh-pages
