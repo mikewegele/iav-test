@@ -48,8 +48,10 @@ jobs:
 
       - name: Remove existing version folder if it exists
         run: |
-          rm -rf $PACKAGE_VERSION
-          echo "Deleted existing folder for version $PACKAGE_VERSION"
+          if [ -d "$PACKAGE_VERSION" ]; then
+            rm -rf $PACKAGE_VERSION
+            echo "Deleted existing folder for version $PACKAGE_VERSION"
+          fi
 
       - name: Create a new version folder in gh-pages
         run: |
