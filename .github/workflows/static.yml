@@ -19,7 +19,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Ensures we have access to all branches
+          fetch-depth: 0  # Ensures we have access to all branches
 
       - name: Set up Git user
         run: |
@@ -46,6 +46,13 @@ jobs:
             git push origin gh-pages
           fi
 
+      - name: Remove existing version folder if it exists
+        run: |
+          if [ -d "$PACKAGE_VERSION" ]; then
+            rm -rf $PACKAGE_VERSION
+            echo "Deleted existing folder for version $PACKAGE_VERSION"
+          fi
+
       - name: Create a new version folder in gh-pages
         run: |
           mkdir -p $PACKAGE_VERSION
@@ -57,11 +64,9 @@ jobs:
           cp -r docs/* $PACKAGE_VERSION/
           git add $PACKAGE_VERSION
 
-      - name: Append current version to version-list.md
+      - name: Commit and push changes
         run: |
-          echo -e "\n$PACKAGE_VERSION" >> version-list.md
-          git add version-list.md
           rm -rf docs/*
           git add .
-          git commit -m "Append version $PACKAGE_VERSION to version-list.md"
+          git commit -m "Deploy docs for version $PACKAGE_VERSION"
           git push origin gh-pages
