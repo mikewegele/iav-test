@@ -34,11 +34,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         pushWindowState(`${basePath}/${newestVersion}/${fileName}`)
         await loadPage(fileName)
     }
-    await loadVersionDropdown();
+    await loadVersionDropdown(window.location.href);
     await loadPage(fileName)
     await loadPageNav();
-    await loadVersionBanner(newestVersion);
-    await createPageNavigation();
+    await loadVersionBanner();
 });
 
 const getOptionalVersionList = async () => {
@@ -87,6 +86,13 @@ const extractFileNameFromURL = (url) => {
     return pathSegments[pathSegments.length - 1];
 }
 
+const extractVersionFromURL = (url) => {
+    const urlObj = new URL(url);
+    const pathSegments = urlObj.pathname.split('/');
+    return pathSegments[pathSegments.length - 2];
+}
+
+
 const loadPage = async (url) => {
     document.getElementById('container').innerHTML = await fetchData(`${url}`);
 }
@@ -129,13 +135,17 @@ const createPageNavigation = () => {
     pagePlaceholder.appendChild(navList);
 }
 
-const loadVersionDropdown = async () => {
+const loadVersionDropdown = async (url) => {
     const versionDropdown = document.getElementById('versionDropdown');
     const versionResponse = await fetch("../version-list.md");
     if (versionResponse.ok) {
+        const currentVersion = extractVersionFromURL(url);
         const versionText = await versionResponse.text();
-        const versions = versionText.split('\n').filter(line => line.trim() !== '').reverse();
-
+        const versions = versionText.split('\n')
+            .map(line => line.trim())
+            .filter(line => line !== '' && line !== currentVersion)
+            .reverse();
+        versions.unshift(currentVersion);
         versions.forEach(version => {
             const option = document.createElement('option');
             option.value = version;
@@ -149,21 +159,24 @@ const loadVersionDropdown = async () => {
         option.textContent = version;
         versionDropdown.appendChild(option);
     }
-    versionDropdown.addEventListener('change', function() {
+    versionDropdown.addEventListener('change', () => {
         const selectedVersion = this.value;
-        navigate("overview.html", selectedVersion);
+        navigate(extractFileNameFromURL(window.location.href), selectedVersion);
+        loadVersionBanner()
     });
 }
 
-const loadVersionBanner = async (newestVersion) => {
+const loadVersionBanner = async () => {
     const versionBanner = document.getElementById('versionBanner');
+    const newestVersion = await getNewestVersion();
     const selectedVersion = await getSelectedVersion();
-
     if (newestVersion !== selectedVersion) {
         versionBanner.innerHTML = `
             <div class="version-banner">
                 Version ${newestVersion} is out now!
             </div>
         `;
+    } else {
+        versionBanner.innerHTML = "";
     }
 };
