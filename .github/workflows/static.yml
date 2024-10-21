@@ -64,9 +64,15 @@ jobs:
           cp -r docs/* $PACKAGE_VERSION/
           git add $PACKAGE_VERSION
 
+      - name: Remove docs folder content only if not empty
+        run: |
+          if [ -n "$(ls -A docs/ 2>/dev/null)" ]; then
+            rm -rf docs/*
+            git add docs/
+            echo "Removed old docs content"
+          fi
+
       - name: Commit and push changes
         run: |
-          rm -rf docs/*
-          git add .
-          git commit -m "Deploy docs for version $PACKAGE_VERSION"
+          git commit -m "Deploy docs for version $PACKAGE_VERSION" || echo "No changes to commit"
           git push origin gh-pages
